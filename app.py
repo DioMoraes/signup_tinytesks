@@ -1,13 +1,14 @@
 from flask import Flask, render_template, request, redirect, flash, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
+import os
 
 
 from parameters import countries, languages
 
 
 app = Flask(__name__)
-app.secret_key = 'aort pmob mkee jqeq'
+app.secret_key = '*****'
 
 # Configurações do banco de dados (SQLite)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///subscribers.db'
