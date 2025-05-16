@@ -10,11 +10,15 @@ from parameters import countries, languages
 app = Flask(__name__)
 app.secret_key = '***************'
 
-# Configurações do banco de dados (SQLite)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///subscribers.db'
+# Configura o banco antes de criar o objeto SQLAlchemy
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///local.db')
+if app.config['SQLALCHEMY_DATABASE_URI'].startswith("postgres://"):
+    app.config['SQLALCHEMY_DATABASE_URI'] = app.config['SQLALCHEMY_DATABASE_URI'].replace("postgres://", "postgresql://", 1)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db = SQLAlchemy(app)
 
-# Configurações do Flask-Mail
+# Configurações do Flask-Mail (mantém igual)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
@@ -22,16 +26,8 @@ app.config['MAIL_USERNAME'] = 'diogomoraes53@gmail.com'
 app.config['MAIL_PASSWORD'] = 'aort pmob mkee jqeq'
 mail = Mail(app)
 
-# Modelo de banco de dados
 
-# Pega a URL do banco no ambiente, ou usa uma local de fallback
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///local.db')
 
-# Se usar Postgres, essa linha remove o prefixo antigo que o SQLAlchemy não aceita:
-if app.config['SQLALCHEMY_DATABASE_URI'].startswith("postgres://"):
-    app.config['SQLALCHEMY_DATABASE_URI'] = app.config['SQLALCHEMY_DATABASE_URI'].replace("postgres://", "postgresql://", 1)
-
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
 class Subscriber(db.Model):
@@ -105,8 +101,4 @@ def create_tables():
 
 if __name__ == '__main__':
     
-
-    
-    with app.app_context():
-        db.create_all()
     app.run(debug=True)
