@@ -26,6 +26,7 @@ app.config['MAIL_USERNAME'] = 'diogomoraes53@gmail.com'
 app.config['MAIL_PASSWORD'] = 'aort pmob mkee jqeq'
 mail = Mail(app)
 
+# Modelo de banco de dados
 
 
 
@@ -95,10 +96,8 @@ def send():
         return redirect('/send')
     return render_template('send.html')
 
-@app.before_first_request
-def create_tables():
-    db.create_all()
 
 if __name__ == '__main__':
-    
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)
