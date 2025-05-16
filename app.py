@@ -8,7 +8,7 @@ from parameters import countries, languages
 
 
 app = Flask(__name__)
-app.secret_key = 'aort pmob mkee jqeq'
+app.secret_key = '***************'
 
 # Configurações do banco de dados (SQLite)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///subscribers.db'
