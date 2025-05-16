@@ -23,6 +23,13 @@ app.config['MAIL_PASSWORD'] = 'aort pmob mkee jqeq'
 mail = Mail(app)
 
 # Modelo de banco de dados
+
+
+# Usa a variável de ambiente DATABASE_URL ou um fallback local (ex: SQLite)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///local.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
 class Subscriber(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
