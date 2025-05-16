@@ -24,9 +24,13 @@ mail = Mail(app)
 
 # Modelo de banco de dados
 
-
-# Usa a variável de ambiente DATABASE_URL ou um fallback local (ex: SQLite)
+# Pega a URL do banco no ambiente, ou usa uma local de fallback
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///local.db')
+
+# Se usar Postgres, essa linha remove o prefixo antigo que o SQLAlchemy não aceita:
+if app.config['SQLALCHEMY_DATABASE_URI'].startswith("postgres://"):
+    app.config['SQLALCHEMY_DATABASE_URI'] = app.config['SQLALCHEMY_DATABASE_URI'].replace("postgres://", "postgresql://", 1)
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -94,6 +98,10 @@ def send():
         flash('Mensagem a ser enviada para todos os inscritos!', 'info')
         return redirect('/send')
     return render_template('send.html')
+
+@app.before_first_request
+def create_tables():
+    db.create_all()
 
 if __name__ == '__main__':
     
